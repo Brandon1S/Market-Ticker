@@ -16,8 +16,14 @@ client = RESTClient(api_key=os.environ['POLYGON_API_CLIENT'])
 
 
 def main():
-    print("'ello gov'na")
+    # Open and read the file
+    with open('tickers.txt', 'r') as file:
+        tickers = file.readlines()
+    
+    # Process each line in the file
+    for ticker in tickers:
+        print(ticker.strip())  #Print the ticker
 
-
+#Ensures main function is called when the script is executed
 if __name__=="__main__":
     main()
