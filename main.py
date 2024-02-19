@@ -6,7 +6,8 @@ client = RESTClient(api_key=os.environ['POLYGON_API_CLIENT'])
 
 
 RSI_DAYS = 3
-RSI_UPPER_BOUND = 75
+MACD_DAYS = 3
+RSI_UPPER_BOUND = 35
 RSI_LOWER_BOUND = 25
 
 # TODO 
@@ -23,13 +24,32 @@ RSI_LOWER_BOUND = 25
 def findRSI(ticker: string, number_of_days: int):
     print("Finding RSI")
     rsi_out_of_bounds = True
-    rsi_data = client.get_rsi(ticker=ticker, timespan='day', adjusted=True, window=365, series_type='close', order='desc', limit=number_of_days)
+
+    rsi_data = client.get_rsi(ticker=ticker, timespan='day', adjusted=True, window=14, series_type='close', order='desc', limit=number_of_days)
+    
+    # Determine if RSI is out-of-bounds. AKA very overbought/oversold
     for result in rsi_data.values:
         print(result.value)
         if result.value < RSI_UPPER_BOUND and result.value > RSI_LOWER_BOUND:
             rsi_out_of_bounds = False
             continue
     return rsi_out_of_bounds
+
+def findMACD(ticker: string, number_of_days: int):
+    # Get MACD data from API
+    macd_data = client.get_macd(ticker=ticker, timespan='day', adjusted=True, short_window=12, long_window=26, signal_window=9, series_type='close', order='desc', limit=number_of_days)
+
+    # Determine if the MACD is decelerating
+    
+    # Determine gap between current and next value
+    print(macd_data)
+    for result in macd_data.values:
+        print(result.histogram)
+        
+
+
+def isMACDDecelerating():
+    print("read last X values of MACD and determine if slowing down")
 
 def main():
     print("'ello gov'na")
@@ -47,12 +67,11 @@ def main():
     print("List of RSI Candidates: ")
     for rsi_candidate in rsi_candidates:
         print(rsi_candidate)
+        findMACD(rsi_candidate.strip(), MACD_DAYS)
     print("===============================")
 
     # From list of RSI candidates, get MACD and determine acceleration
     # Looking for decelerating MACD over several days
-
-
 
 
 #Ensures main function is called when the script is executed
