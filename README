@@ -1,0 +1,5 @@
+To run the test harness, run the following command from the main application directory:
+
+```
+python3 -m test_harness.test
+```
